@@ -1,79 +1,155 @@
-# Visual Studio Code - Open Source ("Code - OSS")
+# KadeIDE
 
-[![Feature Requests](https://img.shields.io/github/issues/microsoft/vscode/feature-request.svg)](https://github.com/microsoft/vscode/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-request+sort%3Areactions-%2B1-desc)
-[![Bugs](https://img.shields.io/github/issues/microsoft/vscode/bug.svg)](https://github.com/microsoft/vscode/issues?utf8=✓&q=is%3Aissue+is%3Aopen+label%3Abug)
-[![Gitter](https://img.shields.io/badge/chat-on%20gitter-yellow.svg)](https://gitter.im/Microsoft/vscode)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## The Repository
+KadeIDE is a lightweight code editor forked from VS Code, reimagined to deliver a fast, efficient coding experience with core functionality like IntelliSense and advanced AI-powered features. Built with Tauri instead of Electron, KadeIDE achieves a smaller footprint (targeting ~10-20MB binary size and ~30-50MB memory usage) while retaining essential editing capabilities. It supports flexible AI integration through APIs (e.g., Grok, OpenAI, Anthropic, Gemini, Mistral) and local models (via Ollama), inspired by tools like Cursor and Windsurf.
 
-This repository ("`Code - OSS`") is where we (Microsoft) develop the [Visual Studio Code](https://code.visualstudio.com) product together with the community. Not only do we work on code and issues here, we also publish our [roadmap](https://github.com/microsoft/vscode/wiki/Roadmap), [monthly iteration plans](https://github.com/microsoft/vscode/wiki/Iteration-Plans), and our [endgame plans](https://github.com/microsoft/vscode/wiki/Running-the-Endgame). This source code is available to everyone under the standard [MIT license](https://github.com/microsoft/vscode/blob/main/LICENSE.txt).
+## ✨ Features
 
-## Visual Studio Code
+- **Lightweight Design**: Powered by Tauri, KadeIDE uses native webviews for minimal resource usage, making it ideal for low-end hardware.
+- **IntelliSense**: Robust code completion, diagnostics, and hover info via the Language Server Protocol (LSP), supporting languages like TypeScript, JavaScript, and Python.
+- **AI Integration**:
+  - **API-Based**: Seamless integration with AI providers like Grok, OpenAI, Anthropic, Gemini, and Mistral for code suggestions, chat, and refactoring.
+  - **Local Models**: Support for local AI models (e.g., CodeLLaMA, TinyLLaMA) via Ollama, with a model manager for easy downloads.
+- **Customizable UI**: Simplified workbench inspired by VS Code, with a focus on core editing features and optional AI-driven sidebars.
+- **Cross-Platform**: Runs on Windows, macOS, and Linux with a consistent experience.
 
-<p align="center">
-  <img alt="VS Code in action" src="https://user-images.githubusercontent.com/35271042/118224532-3842c400-b438-11eb-923d-a5f66fa6785a.png">
-</p>
+## 🎯 Goals
 
-[Visual Studio Code](https://code.visualstudio.com) is a distribution of the `Code - OSS` repository with Microsoft-specific customizations released under a traditional [Microsoft product license](https://code.visualstudio.com/License/).
+KadeIDE aims to:
 
-[Visual Studio Code](https://code.visualstudio.com) combines the simplicity of a code editor with what developers need for their core edit-build-debug cycle. It provides comprehensive code editing, navigation, and understanding support along with lightweight debugging, a rich extensibility model, and lightweight integration with existing tools.
+- Provide a lightweight alternative to VS Code, reducing memory and CPU usage.
+- Offer flexible AI capabilities, allowing users to choose between cloud-based APIs or local models.
+- Maintain core editing features like IntelliSense while stripping non-essential components (e.g., debuggers, Git integration).
+- Build a modular AI provider system for easy extensibility.
 
-Visual Studio Code is updated monthly with new features and bug fixes. You can download it for Windows, macOS, and Linux on [Visual Studio Code's website](https://code.visualstudio.com/Download). To get the latest releases every day, install the [Insiders build](https://code.visualstudio.com/insiders).
+## ⚡ Optimizations for Lightweight Performance
 
-## Contributing
+KadeIDE is optimized for minimal resource usage, targeting a binary size of ~10-20MB, memory usage of ~30-50MB, and startup time of ~1-2 seconds:
 
-There are many ways in which you can participate in this project, for example:
+### Minimal Frontend
+- Uses Monaco Editor with only essential languages (TypeScript, JavaScript, Python) to reduce bundle size.
+- Employs lightweight UI frameworks (e.g., Preact or plain JavaScript) and purged Tailwind CSS for minimal CSS footprint.
+- Minifies and compresses assets with esbuild and Brotli for smaller distribution.
 
-* [Submit bugs and feature requests](https://github.com/microsoft/vscode/issues), and help us verify as they are checked in
-* Review [source code changes](https://github.com/microsoft/vscode/pulls)
-* Review the [documentation](https://github.com/microsoft/vscode-docs) and make pull requests for anything from typos to additional and new content
+### Tauri Backend
+- Compresses binaries with UPX, reducing size by 30-50%.
+- Minimizes Rust dependencies (e.g., uses ureq for HTTP, log for logging).
+- Lazy-loads LSP servers and AI services to lower memory usage.
+- Optionally uses WebAssembly for backend logic to further reduce binary size.
 
-If you are interested in fixing issues and contributing directly to the code base,
-please see the document [How to Contribute](https://github.com/microsoft/vscode/wiki/How-to-Contribute), which covers the following:
+### Efficient IntelliSense
+- Supports a limited set of LSP servers for core languages to minimize memory and disk usage.
+- Runs LSP servers externally (e.g., system-installed typescript-language-server) to reduce binary size.
+- Caches frequent LSP responses for faster performance.
 
-* [How to build and run from source](https://github.com/microsoft/vscode/wiki/How-to-Contribute)
-* [The development workflow, including debugging and running tests](https://github.com/microsoft/vscode/wiki/How-to-Contribute#debugging)
-* [Coding guidelines](https://github.com/microsoft/vscode/wiki/Coding-Guidelines)
-* [Submitting pull requests](https://github.com/microsoft/vscode/wiki/How-to-Contribute#pull-requests)
-* [Finding an issue to work on](https://github.com/microsoft/vscode/wiki/How-to-Contribute#where-to-contribute)
-* [Contributing to translations](https://aka.ms/vscodeloc)
+### Optimized AI Integration
+- Uses lightweight API clients (e.g., fetch or ureq) for AI providers like Grok and OpenAI.
+- Supports small, quantized local models (e.g., TinyLLaMA with 4-bit quantization) via Ollama to reduce memory and disk usage.
+- Dynamically loads AI providers to exclude unused code.
 
-## Feedback
+### Reduced Feature Set
+- Removes non-essential VS Code features (e.g., debugging, Git integration, extensions marketplace) for a lean experience.
+- Makes features like AI chat or additional languages optional via user settings.
+- Includes minimal themes (e.g., vs-dark) to reduce CSS/JSON bloat.
 
-* Ask a question on [Stack Overflow](https://stackoverflow.com/questions/tagged/vscode)
-* [Request a new feature](CONTRIBUTING.md)
-* Upvote [popular feature requests](https://github.com/microsoft/vscode/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-request+sort%3Areactions-%2B1-desc)
-* [File an issue](https://github.com/microsoft/vscode/issues)
-* Connect with the extension author community on [GitHub Discussions](https://github.com/microsoft/vscode-discussions/discussions) or [Slack](https://aka.ms/vscode-dev-community)
-* Follow [@code](https://twitter.com/code) and let us know what you think!
+### Fast Startup
+- Lazy-loads resources (e.g., Monaco languages, LSP servers, AI models) until needed.
+- Precompiles assets (e.g., Rust to WebAssembly, Vite pre-bundling) for faster initialization.
+- Renders only the editor on startup, loading sidebars or AI panels on demand.
 
-See our [wiki](https://github.com/microsoft/vscode/wiki/Feedback-Channels) for a description of each of these channels and information on some other available community-driven channels.
+### Profiling and Testing
+- Regularly profiles memory and CPU usage with tools like htop and Tauri dev tools.
+- Tests on low-end hardware (e.g., 4GB RAM, no GPU) to ensure performance.
+- Benchmarks against VS Code to validate improvements.
 
-## Related Projects
+## 🚀 Getting Started
 
-Many of the core components and extensions to VS Code live in their own repositories on GitHub. For example, the [node debug adapter](https://github.com/microsoft/vscode-node-debug) and the [mono debug adapter](https://github.com/microsoft/vscode-mono-debug) repositories are separate from each other. For a complete list, please visit the [Related Projects](https://github.com/microsoft/vscode/wiki/Related-Projects) page on our [wiki](https://github.com/microsoft/vscode/wiki).
+### Prerequisites
 
-## Bundled Extensions
+- **Rust**: Install via `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+- **Node.js**: Required for frontend dependencies (Monaco Editor)
+- **Tauri Dependencies**: See [Tauri prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites) for platform-specific requirements (e.g., WebKit2GTK on Linux)
+- **Ollama** (optional): For local AI models, install [Ollama](https://ollama.ai/)
+- **LSP Servers** (optional): Install language servers (e.g., `npm install -g typescript-language-server`) for IntelliSense
 
-VS Code includes a set of built-in extensions located in the [extensions](extensions) folder, including grammars and snippets for many languages. Extensions that provide rich language support (code completion, Go to Definition) for a language have the suffix `language-features`. For example, the `json` extension provides coloring for `JSON` and the `json-language-features` extension provides rich language support for `JSON`.
+### Installation
 
-## Development Container
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/SHA888/KadeIDE.git
+   cd KadeIDE
+   ```
 
-This repository includes a Visual Studio Code Dev Containers / GitHub Codespaces development container.
+2. Install frontend dependencies:
+   ```bash
+   npm install
+   ```
 
-* For [Dev Containers](https://aka.ms/vscode-remote/download/containers), use the **Dev Containers: Clone Repository in Container Volume...** command which creates a Docker volume for better disk I/O on macOS and Windows.
-  * If you already have VS Code and Docker installed, you can also click [here](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/microsoft/vscode) to get started. This will cause VS Code to automatically install the Dev Containers extension if needed, clone the source code into a container volume, and spin up a dev container for use.
+3. Install Rust dependencies:
+   ```bash
+   cargo install tauri-cli
+   ```
 
-* For Codespaces, install the [GitHub Codespaces](https://marketplace.visualstudio.com/items?itemName=GitHub.codespaces) extension in VS Code, and use the **Codespaces: Create New Codespace** command.
+4. Run in development mode:
+   ```bash
+   cargo tauri dev
+   ```
 
-Docker / the Codespace should have at least **4 Cores and 6 GB of RAM (8 GB recommended)** to run full build. See the [development container README](.devcontainer/README.md) for more information.
+5. Build for production:
+   ```bash
+   cargo tauri build
+   ```
 
-## Code of Conduct
+### Configuration
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+- **IntelliSense**: Configure LSP servers for your preferred languages in `settings.json`
+- **AI Providers**:
+  - **API-Based**: Add API keys for Grok, OpenAI, Anthropic, etc., in the settings UI or `config.json`
+  - **Local Models**: Use the model manager to download models via Ollama (e.g., `ollama pull tinyllama`)
+- **UI Customization**: Adjust the workbench layout via `settings.json` to enable/disable sidebars or AI features
 
-## License
+## 💻 Usage
 
-Copyright (c) Microsoft Corporation. All rights reserved.
+- **Editing**: Open files in the Monaco-based editor, with IntelliSense for supported languages
+- **AI Features**:
+  - Use inline code completion powered by AI providers (e.g., Grok for suggestions)
+  - Access the AI chat sidebar for code explanations or refactoring
+  - Switch between API-based and local models in the settings panel
+- **Performance**: Monitor memory usage (~30-50MB target) and optimize by disabling unused features
 
-Licensed under the [MIT](LICENSE.txt) license.
+## 🗺️ Roadmap
+
+1. **Phase 1**: Port VS Code's core editor (Monaco) and IntelliSense (LSP) to Tauri
+2. **Phase 2**: Implement AI integration with one provider (e.g., Grok) and local models via Ollama
+3. **Phase 3**: Apply optimizations for binary size, memory, and startup time
+4. **Phase 4**: Build a minimal extension system for custom plugins
+5. **Phase 5**: Community-driven features and cross-platform testing
+
+## 🤝 Contributing
+
+Contributions are welcome! To contribute:
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit changes: `git commit -m "Add your feature"`
+4. Push to your fork: `git push origin feature/your-feature`
+5. Open a pull request
+
+Please follow the [Code of Conduct](CODE_OF_CONDUCT.md) and check the [Contributing Guidelines](CONTRIBUTING.md) for details.
+
+## 📄 License
+
+KadeIDE is licensed under the MIT License, based on the original VS Code repository. Note that AI models and APIs may have their own licensing terms (e.g., check xAI's API for Grok).
+
+## 🙏 Acknowledgments
+
+- Built upon VS Code and Tauri
+- Inspired by AI-driven editors like Cursor and Windsurf
+- Thanks to the open-source community for tools like Monaco, LSP, and Ollama
+
+## 📬 Contact
+
+For questions, feedback, or collaboration, open an issue on [GitHub](https://github.com/SHA888/KadeIDE/issues) or reach out on [X](https://twitter.com/).
+
+Happy coding with KadeIDE! 🚀
