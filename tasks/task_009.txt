@@ -88,3 +88,53 @@ function AiChatSidebar({ aiProvider, onProviderChange }) {
 6. Verify AI suggestion highlighting
 7. Test keyboard shortcuts for AI interactions
 8. Validate user experience with different AI providers
+
+# Subtasks:
+## 1. Implement inline completion component [pending]
+### Dependencies: None
+### Description: Develop the UI component for displaying AI-powered inline code completions within the editor
+### Details:
+Create a component that renders suggestions directly in the editor flow, handle positioning relative to cursor, implement visual styling for completion suggestions, and ensure proper text insertion when accepted
+
+## 2. Build chat sidebar interface [pending]
+### Dependencies: None
+### Description: Create a collapsible sidebar with chat functionality for AI interactions
+### Details:
+Design and implement the chat UI with message history, user input area, response formatting with markdown/code support, and sidebar toggle controls
+
+## 3. Develop code explanation panel [pending]
+### Dependencies: None
+### Description: Create a dedicated panel for displaying AI-generated code explanations
+### Details:
+Build a resizable panel that can show detailed code explanations with syntax highlighting, section navigation, and the ability to copy explanations to clipboard
+
+## 4. Implement provider switching UI [pending]
+### Dependencies: None
+### Description: Create interface for users to select and configure different AI providers
+### Details:
+Design a settings panel for AI provider selection, API key configuration, model selection dropdowns, and provider-specific settings with appropriate validation
+
+## 5. Add streaming response rendering [pending]
+### Dependencies: 9.1, 9.2, 9.3
+### Description: Implement real-time rendering of streaming AI responses across all components
+### Details:
+Create a unified system for handling streaming responses, implement typing-like animations, progress indicators, and ensure consistent rendering across inline completions, chat, and explanation panels
+
+## 6. Implement suggestion highlighting [pending]
+### Dependencies: 9.1, 9.5
+### Description: Add visual highlighting for AI suggestions with acceptance mechanisms
+### Details:
+Create highlight styles for different suggestion types, implement accept/reject controls, add hover states, and ensure accessibility compliance for all interactive elements
+
+## 7. Configure keyboard shortcuts [pending]
+### Dependencies: 9.1, 9.2, 9.3, 9.4, 9.6
+### Description: Implement and document keyboard shortcuts for all AI-powered features
+### Details:
+Define shortcut scheme for triggering completions, accepting suggestions, opening/closing panels, navigating chat history, and ensure no conflicts with existing editor shortcuts
+
+## 8. Conduct UX validation testing [pending]
+### Dependencies: 9.5, 9.6, 9.7
+### Description: Test and refine the user experience of all AI-powered UI components
+### Details:
+Create test scenarios, gather user feedback on component usability, measure response times and interaction flows, identify and fix UX issues, and document best practices for users
+
