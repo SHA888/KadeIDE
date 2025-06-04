@@ -8,14 +8,6 @@ use tauri::menu::{Menu, MenuItem};
 use log::info;
 use anyhow::{Result, Context};
 
-/// Initialize the logger for the application
-fn init_logger() -> Result<()> {
-    // In Tauri 2.5.1, the logger is initialized through the plugin system
-    // The actual logging is configured in the Builder setup
-    info!("Logger initialized");
-    Ok(())
-}
-
 /// Initialize the system tray with menu
 fn setup_tray<R: Runtime>(app: &mut tauri::App<R>) -> Result<()> {
     let app_handle = app.handle();

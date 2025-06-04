@@ -46,7 +46,7 @@ async function readFile(path) {
 6. Validate webview rendering performance
 
 # Subtasks:
-## 1. Initialize Tauri Project [in-progress]
+## 1. Initialize Tauri Project [done]
 ### Dependencies: None
 ### Description: Set up a new Tauri project using the CLI tool and select appropriate templates
 ### Details:

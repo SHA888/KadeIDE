@@ -1,7 +1,6 @@
 //! Error handling for the KadeIDE application
 
 use thiserror::Error;
-use std::fmt;
 
 /// Main error type for the KadeIDE application
 #[derive(Debug, Error)]
