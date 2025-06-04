@@ -8,6 +8,8 @@ repository = "https://github.com/SHA888/KadeIDE"
 edition = "2021"
 rust-version = "1.70"
 
+
+
 [lib]
 crate-type = ["cdylib", "rlib"]
 
@@ -21,11 +23,11 @@ bindgen = { version = "0.68.0", optional = true }
 
 [dependencies]
 # Tauri
-# Core Tauri dependencies
+# Core Tauri dependencies with minimal features
 tauri = { version = "2.5.1", features = [
-    "wry",
+    "wry/compositor",  # Only enable compositor backend
     "tray-icon"
-] }
+], default-features = false }  # Disable default features
 
 # Tauri plugins
 tauri-plugin-log = "2.4.0"
@@ -75,12 +77,14 @@ objc = "0.2.7"
 winapi = { version = "0.3", features = ["winuser", "winerror", "winbase", "winnt"] }
 
 [profile.dev]
-opt-level = 0
-debug = true
-split-debuginfo = 'unpacked'
+opt-level = "z"  # Optimize for size even in dev mode
+lto = "thin"     # Use thin LTO for faster builds
+codegen-units = 1
+panic = "abort"  # Smaller binary by using abort instead of unwinding
 
 [profile.release]
-opt-level = 3
-lto = true
+opt-level = "z"  # Optimize for size
+lto = "fat"      # Use fat LTO for maximum optimization
 codegen-units = 1
-panic = 'abort'
+panic = "abort"  # Smaller binary by using abort instead of unwinding
+strip = true    # Remove debug symbols from release builds
