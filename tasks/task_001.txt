@@ -1,0 +1,46 @@
+# Task ID: 1
+# Title: Setup Tauri Application Shell
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Create the foundation for KadeIDE by setting up a Tauri application shell with webview integration and basic project structure.
+# Details:
+1. Initialize a new Tauri project with Rust backend
+2. Configure the project for minimal binary size
+3. Setup the webview component with basic HTML/CSS structure
+4. Implement basic IPC communication between frontend and backend
+5. Create the application shell with minimal UI
+6. Configure build pipeline with esbuild
+7. Implement basic window management
+
+Code structure:
+```rust
+// main.rs
+fn main() {
+  tauri::Builder::default()
+    .invoke_handler(tauri::generate_handler![
+      read_file,
+      write_file,
+      list_directory
+    ])
+    .run(tauri::generate_context!())
+    .expect("Error while running tauri application");
+}
+```
+
+```javascript
+// main.js
+const { invoke } = window.__TAURI__.tauri;
+
+async function readFile(path) {
+  return await invoke('read_file', { path });
+}
+```
+
+# Test Strategy:
+1. Verify Tauri application builds successfully
+2. Test basic IPC communication between frontend and backend
+3. Measure initial binary size to ensure it's on track for target metrics
+4. Verify application launches on all target platforms (Windows, macOS, Linux)
+5. Test window management functionality
+6. Validate webview rendering performance

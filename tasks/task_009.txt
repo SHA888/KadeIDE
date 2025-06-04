@@ -1,0 +1,90 @@
+# Task ID: 9
+# Title: Create AI-Powered UI Components
+# Status: pending
+# Dependencies: 3, 7, 8
+# Priority: medium
+# Description: Develop UI components for AI-powered features including inline code completion, AI chat sidebar, and code explanations.
+# Details:
+1. Implement inline code completion UI
+2. Create AI chat sidebar component
+3. Develop code explanation panel
+4. Add AI provider switching UI
+5. Implement streaming response rendering
+6. Create AI suggestion highlighting
+7. Add keyboard shortcuts for AI interactions
+
+Inline completion component:
+```javascript
+function InlineCompletion({ editor, aiProvider }) {
+  const [completion, setCompletion] = useState(null);
+  const [loading, setLoading] = useState(false);
+  
+  useEffect(() => {
+    const subscription = editor.onDidChangeCursorPosition(async (e) => {
+      // Request completion when cursor position changes
+      if (shouldRequestCompletion(e)) {
+        setLoading(true);
+        try {
+          const context = getEditorContext(editor);
+          const result = await window.__TAURI__.invoke('ai_complete_code', {
+            prompt: getCurrentLine(editor),
+            context
+          });
+          setCompletion(result);
+          showCompletion(editor, result);
+        } catch (error) {
+          console.error('Completion error:', error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    });
+    
+    return () => subscription.dispose();
+  }, [editor, aiProvider]);
+  
+  // Render inline completion UI
+}
+```
+
+AI chat sidebar:
+```javascript
+function AiChatSidebar({ aiProvider, onProviderChange }) {
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [streaming, setStreaming] = useState(false);
+  
+  async function sendMessage() {
+    if (!input.trim()) return;
+    
+    const newMessages = [...messages, { role: 'user', content: input }];
+    setMessages(newMessages);
+    setInput('');
+    setStreaming(true);
+    
+    try {
+      const stream = await window.__TAURI__.invoke('ai_stream_chat', {
+        messages: newMessages
+      });
+      
+      // Handle streaming response
+    } catch (error) {
+      console.error('Chat error:', error);
+    } finally {
+      setStreaming(false);
+    }
+  }
+  
+  // Render chat sidebar UI
+}
+```
+
+# Test Strategy:
+1. Test inline code completion UI
+2. Verify AI chat sidebar functionality
+3. Test code explanation panel
+4. Validate AI provider switching UI
+5. Test streaming response rendering
+6. Verify AI suggestion highlighting
+7. Test keyboard shortcuts for AI interactions
+8. Validate user experience with different AI providers

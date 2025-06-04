@@ -1,0 +1,62 @@
+# Task ID: 3
+# Title: Integrate Monaco Editor Core
+# Status: pending
+# Dependencies: 1, 2
+# Priority: high
+# Description: Integrate a stripped-down version of Monaco Editor with essential features for code editing.
+# Details:
+1. Import minimal Monaco Editor package
+2. Configure Monaco for essential features only
+3. Implement editor state management
+4. Add basic syntax highlighting for TypeScript, JavaScript, and Python
+5. Implement editor pane UI component
+6. Create save/load integration with file system
+7. Optimize Monaco bundle size with tree shaking
+
+Implementation approach:
+```javascript
+// editor.js
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+
+// Only import essential languages
+import 'monaco-editor/esm/vs/basic-languages/typescript/typescript.contribution';
+import 'monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution';
+import 'monaco-editor/esm/vs/basic-languages/python/python.contribution';
+
+function createEditor(container, initialContent = '') {
+  const editor = monaco.editor.create(container, {
+    value: initialContent,
+    language: 'javascript',
+    theme: 'vs-dark',
+    minimap: { enabled: false },
+    automaticLayout: true,
+    fontSize: 14,
+    lineNumbers: 'on',
+    scrollBeyondLastLine: false,
+    // Minimal set of features
+  });
+  
+  return editor;
+}
+```
+
+Editor state model:
+```javascript
+const editorState = {
+  activeFile: null,
+  openFiles: [],
+  cursorPosition: { line: 0, column: 0 },
+  selections: [],
+  undoStack: []
+};
+```
+
+# Test Strategy:
+1. Measure Monaco Editor bundle size after optimization
+2. Test syntax highlighting for supported languages
+3. Verify editor performance with large files
+4. Test save/load functionality with the file system
+5. Validate editor state management
+6. Test undo/redo functionality
+7. Verify editor renders correctly across different screen sizes
+8. Benchmark memory usage during editing operations

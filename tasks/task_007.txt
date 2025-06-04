@@ -1,0 +1,70 @@
+# Task ID: 7
+# Title: Implement Cloud AI Provider Integrations
+# Status: pending
+# Dependencies: 6
+# Priority: medium
+# Description: Integrate cloud AI providers including OpenAI, Anthropic Claude, and others with the AI provider interface.
+# Details:
+1. Implement OpenAI provider integration
+2. Add Anthropic Claude provider
+3. Implement Gemini provider
+4. Add Mistral provider
+5. Create Grok provider integration
+6. Implement API key management
+7. Add error handling and rate limiting support
+8. Create provider-specific configuration options
+
+OpenAI provider implementation:
+```rust
+struct OpenAiProvider {
+  api_key: String,
+  model: String,
+  client: reqwest::Client,
+  cache: Arc<Mutex<AiResponseCache>>,
+}
+
+impl OpenAiProvider {
+  pub fn new(api_key: String, model: String, cache: Arc<Mutex<AiResponseCache>>) -> Self {
+    // Initialize OpenAI provider
+  }
+}
+
+impl AiProvider for OpenAiProvider {
+  fn name(&self) -> &str {
+    "openai"
+  }
+  
+  fn capabilities(&self) -> AiCapabilities {
+    AiCapabilities {
+      supports_streaming: true,
+      supports_code_completion: true,
+      supports_chat: true,
+      context_window: 16384, // For GPT-4 Turbo
+    }
+  }
+  
+  async fn complete_code(&self, prompt: &str, context: &CodeContext) -> Result<String, AiError> {
+    // Implement code completion using OpenAI API
+  }
+  
+  async fn chat(&self, messages: &[ChatMessage]) -> Result<ChatResponse, AiError> {
+    // Implement chat using OpenAI API
+  }
+  
+  async fn stream_chat(&self, messages: &[ChatMessage]) -> Result<impl Stream<Item = Result<ChatResponseChunk, AiError>>, AiError> {
+    // Implement streaming chat using OpenAI API
+  }
+}
+```
+
+Similar implementations for other providers (Anthropic, Gemini, Mistral, Grok).
+
+# Test Strategy:
+1. Test each cloud provider implementation
+2. Verify API key management and security
+3. Test error handling for API failures
+4. Validate rate limiting behavior
+5. Test streaming responses from each provider
+6. Verify provider-specific configuration options
+7. Test fallback behavior when a provider is unavailable
+8. Benchmark response times across different providers

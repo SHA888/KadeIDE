@@ -1,0 +1,102 @@
+# Task ID: 4
+# Title: Develop Settings and Configuration System
+# Status: pending
+# Dependencies: 1
+# Priority: medium
+# Description: Create a JSON-based settings system to manage user preferences, feature toggles, and application configuration.
+# Details:
+1. Design settings schema for user preferences
+2. Implement settings file read/write in Rust backend
+3. Create default settings configuration
+4. Develop hot-reload mechanism for settings changes
+5. Implement settings UI component (optional for MVP)
+6. Add validation for settings values
+7. Create workspace-specific settings override
+
+Settings schema example:
+```json
+{
+  "editor": {
+    "fontSize": 14,
+    "fontFamily": "Menlo, Monaco, 'Courier New', monospace",
+    "tabSize": 2,
+    "insertSpaces": true,
+    "lineNumbers": true,
+    "wordWrap": "off"
+  },
+  "appearance": {
+    "theme": "vs-dark",
+    "zoomLevel": 0
+  },
+  "ai": {
+    "activeProvider": "openai",
+    "providers": {
+      "openai": {
+        "enabled": true,
+        "apiKey": "",
+        "model": "gpt-3.5-turbo"
+      },
+      "anthropic": {
+        "enabled": false,
+        "apiKey": "",
+        "model": "claude-2"
+      },
+      "ollama": {
+        "enabled": false,
+        "endpoint": "http://localhost:11434",
+        "model": "codellama"
+      }
+    },
+    "localModels": {
+      "path": "~/.kadeide/models",
+      "models": []
+    }
+  },
+  "lsp": {
+    "servers": {
+      "typescript": {
+        "command": "typescript-language-server",
+        "args": ["--stdio"],
+        "external": true
+      },
+      "python": {
+        "command": "pylsp",
+        "args": [],
+        "external": true
+      }
+    }
+  },
+  "performance": {
+    "lazyLoading": true,
+    "cacheResponses": true,
+    "showResourceUsage": false
+  }
+}
+```
+
+Settings manager implementation:
+```rust
+#[tauri::command]
+async fn read_settings() -> Result<serde_json::Value, String> {
+  // Read settings from file or create default
+}
+
+#[tauri::command]
+async fn write_settings(settings: serde_json::Value) -> Result<(), String> {
+  // Write settings to file
+}
+
+#[tauri::command]
+async fn get_setting(path: String) -> Result<serde_json::Value, String> {
+  // Get specific setting by path
+}
+```
+
+# Test Strategy:
+1. Validate settings file creation with defaults
+2. Test reading and writing settings
+3. Verify hot-reload mechanism works when settings change
+4. Test settings validation logic
+5. Verify workspace-specific settings override global settings
+6. Test settings UI component if implemented
+7. Validate performance impact of settings operations

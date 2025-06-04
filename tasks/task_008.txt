@@ -1,0 +1,99 @@
+# Task ID: 8
+# Title: Develop Local AI Model Integration via Ollama
+# Status: pending
+# Dependencies: 6
+# Priority: medium
+# Description: Implement local AI model support using Ollama for CodeLLaMA and TinyLLaMA with quantization.
+# Details:
+1. Implement Ollama client library integration
+2. Create model download manager
+3. Add support for CodeLLaMA models
+4. Implement TinyLLaMA with 4-bit quantization
+5. Create model switching interface
+6. Add progress indicators for inference
+7. Implement memory usage optimization
+
+Ollama provider implementation:
+```rust
+struct OllamaProvider {
+  endpoint: String,
+  model: String,
+  client: reqwest::Client,
+  cache: Arc<Mutex<AiResponseCache>>,
+}
+
+impl OllamaProvider {
+  pub fn new(endpoint: String, model: String, cache: Arc<Mutex<AiResponseCache>>) -> Self {
+    // Initialize Ollama provider
+  }
+  
+  pub async fn list_models(&self) -> Result<Vec<OllamaModel>, AiError> {
+    // List available models from Ollama
+  }
+  
+  pub async fn pull_model(&self, model_name: &str) -> Result<impl Stream<Item = Result<PullProgress, AiError>>, AiError> {
+    // Pull model from Ollama
+  }
+}
+
+impl AiProvider for OllamaProvider {
+  fn name(&self) -> &str {
+    "ollama"
+  }
+  
+  fn capabilities(&self) -> AiCapabilities {
+    AiCapabilities {
+      supports_streaming: true,
+      supports_code_completion: true,
+      supports_chat: true,
+      context_window: 4096, // Depends on model
+    }
+  }
+  
+  async fn complete_code(&self, prompt: &str, context: &CodeContext) -> Result<String, AiError> {
+    // Implement code completion using Ollama API
+  }
+  
+  async fn chat(&self, messages: &[ChatMessage]) -> Result<ChatResponse, AiError> {
+    // Implement chat using Ollama API
+  }
+  
+  async fn stream_chat(&self, messages: &[ChatMessage]) -> Result<impl Stream<Item = Result<ChatResponseChunk, AiError>>, AiError> {
+    // Implement streaming chat using Ollama API
+  }
+}
+```
+
+Model manager UI:
+```javascript
+function ModelManager({ models, activeModel, onModelSelect, onModelPull }) {
+  const [pulling, setPulling] = useState(false);
+  const [progress, setProgress] = useState(0);
+  
+  async function pullModel(modelName) {
+    setPulling(true);
+    setProgress(0);
+    try {
+      await onModelPull(modelName, (p) => setProgress(p));
+    } finally {
+      setPulling(false);
+    }
+  }
+  
+  return (
+    <div className="model-manager">
+      {/* Model manager UI */}
+    </div>
+  );
+}
+```
+
+# Test Strategy:
+1. Test Ollama client library integration
+2. Verify model download and management
+3. Test CodeLLaMA model support
+4. Validate TinyLLaMA with quantization
+5. Test model switching interface
+6. Verify progress indicators for model operations
+7. Benchmark memory usage with different models
+8. Test error handling for Ollama connection issues
