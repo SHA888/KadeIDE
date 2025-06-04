@@ -1,0 +1,362 @@
+<context>
+# Overview  
+KadeIDE is a lightweight, high-performance code editor forked from VS Code, specifically designed to deliver the core functionality developers need without the bloat. The project addresses the growing concern among developers about modern code editors becoming increasingly resource-intensive, often consuming gigabytes of memory and hundreds of megabytes of disk space. KadeIDE targets developers working on resource-constrained environments, older hardware, or those who simply value efficiency and speed. By leveraging Tauri instead of Electron and implementing aggressive optimization strategies, KadeIDE aims to achieve a ~10-20MB binary size with ~30-50MB memory usage while maintaining essential features like IntelliSense and advanced AI-powered assistance.
+
+# Core Features  
+
+## Lightweight Architecture (Tauri-based)
+- Native webview implementation replacing Electron for dramatically reduced resource consumption
+- UPX binary compression achieving 30-50% size reduction
+- WebAssembly backend options for further optimization
+- Target metrics: ~10-20MB binary, ~30-50MB RAM usage, ~1-2 second startup time
+
+## Core Editor Functionality
+- Monaco Editor integration with essential language support (TypeScript, JavaScript, Python)
+- Language Server Protocol (LSP) integration for IntelliSense capabilities
+- Code completion, diagnostics, and hover information
+- Syntax highlighting and basic code navigation
+- Minimal theme support (vs-dark as primary)
+
+## AI-Powered Development Assistant
+- Flexible AI provider system supporting multiple backends:
+  - Cloud APIs: Grok, OpenAI, Anthropic, Gemini, Mistral
+  - Local models via Ollama (CodeLLaMA, TinyLLaMA with 4-bit quantization)
+- Inline code completion and suggestions
+- AI chat sidebar for code explanations and refactoring
+- Model manager for easy local model downloads
+- Dynamic provider loading to minimize unused code
+
+## Performance Optimizations
+- Lazy loading of resources (languages, LSP servers, AI models)
+- External LSP server execution to reduce binary size
+- Response caching for frequently used LSP queries
+- Precompiled assets using esbuild and Brotli compression
+- Selective feature loading based on user configuration
+
+## Simplified User Interface
+- VS Code-inspired workbench with focus on essentials
+- Optional AI-driven sidebars
+- Customizable layout via settings.json
+- Minimal CSS footprint using purged Tailwind or plain CSS
+- Responsive design for various screen sizes
+
+# User Experience  
+
+## Target User Personas
+
+### Resource-Conscious Developer
+- Works on older hardware or VMs with limited resources
+- Values fast startup times and responsive editing
+- Needs core editing features without extras
+- May work in environments where every MB matters
+
+### AI-Forward Developer
+- Wants AI assistance without heavy IDE overhead
+- Prefers flexibility in choosing AI providers
+- Values privacy with local model options
+- Seeks balance between features and performance
+
+### Minimalist Power User
+- Experienced developer who knows exactly what features they need
+- Prefers customizable, lightweight tools
+- Values speed and efficiency over bells and whistles
+- Comfortable with configuration files
+
+## Key User Flows
+
+### First-Time Setup
+1. Download small binary (~10-20MB)
+2. Run without installation process
+3. Configure preferred languages and AI providers
+4. Optional: Download local AI models via built-in manager
+
+### Daily Coding Workflow
+1. Near-instant startup (~1-2 seconds)
+2. Open project with minimal memory overhead
+3. Get IntelliSense support for core languages
+4. Use AI assistance when needed (opt-in)
+5. Switch between cloud and local AI models seamlessly
+
+### Performance Monitoring
+1. Built-in resource usage indicators
+2. Feature toggle system to disable unused components
+3. Clear feedback on what features impact performance
+
+## UI/UX Considerations
+- Clean, distraction-free interface
+- Keyboard-first navigation
+- Minimal visual elements to reduce rendering overhead
+- Clear visual indicators for AI suggestions
+- Responsive design that works on low-resolution displays
+</context>
+<PRD>
+# Technical Architecture  
+
+## System Components
+
+### Frontend (Renderer Process)
+- **Monaco Editor Core**: Stripped-down version with essential features only
+- **Language Support**: TypeScript, JavaScript, Python bundles only
+- **UI Framework**: Preact or vanilla JavaScript for minimal overhead
+- **State Management**: Lightweight store for editor state and settings
+- **AI Interface**: WebSocket/IPC connection to backend AI services
+
+### Backend (Rust/Tauri)
+- **Tauri Core**: Native webview management and system APIs
+- **LSP Manager**: External process spawning and communication
+- **AI Provider System**: Modular architecture for multiple providers
+- **Settings Manager**: JSON-based configuration system
+- **File System**: Efficient file operations and watching
+
+### AI Integration Layer
+- **Provider Interface**: Unified API for all AI providers
+- **Model Manager**: Download, storage, and loading of local models
+- **Request Router**: Intelligent routing between cloud and local models
+- **Cache Layer**: Response caching for common queries
+- **Stream Handler**: Real-time streaming of AI responses
+
+## Data Models
+
+### Editor State
+```
+{
+  activeFile: string,
+  openFiles: string[],
+  cursorPosition: { line: number, column: number },
+  selections: Selection[],
+  undoStack: Edit[]
+}
+```
+
+### AI Configuration
+```
+{
+  activeProvider: string,
+  providers: {
+    [key: string]: {
+      enabled: boolean,
+      apiKey?: string,
+      endpoint?: string,
+      model?: string
+    }
+  },
+  localModels: {
+    path: string,
+    models: ModelInfo[]
+  }
+}
+```
+
+### LSP Configuration
+```
+{
+  servers: {
+    [language: string]: {
+      command: string,
+      args: string[],
+      external: boolean
+    }
+  }
+}
+```
+
+## APIs and Integrations
+
+### Internal APIs
+- **Editor API**: Monaco editor commands and extensions
+- **IPC API**: Tauri command system for frontend-backend communication
+- **Settings API**: Read/write configuration with hot reload
+- **AI Streaming API**: WebSocket-based streaming for real-time responses
+
+### External Integrations
+- **LSP Servers**: Via stdio protocol (typescript-language-server, pylsp)
+- **AI Providers**: REST APIs for cloud providers
+- **Ollama**: Local API for model management and inference
+- **File System**: Native OS file operations via Tauri
+
+## Infrastructure Requirements
+
+### Build Infrastructure
+- **Rust toolchain**: For Tauri backend compilation
+- **Node.js**: For frontend build process
+- **GitHub Actions**: CI/CD pipeline for multi-platform builds
+- **Asset optimization**: esbuild, Brotli, UPX
+
+### Runtime Requirements
+- **Minimal OS dependencies**: Only native webview (WebKit2GTK on Linux)
+- **Optional LSP servers**: Can be bundled or system-installed
+- **Optional Ollama**: For local AI model support
+
+# Development Roadmap  
+
+## Phase 1: Core Editor Foundation (MVP)
+- Fork and strip VS Code to essential Monaco editor
+- Implement Tauri wrapper with basic file operations
+- Create minimal UI with file browser and editor pane
+- Integrate TypeScript/JavaScript syntax highlighting
+- Basic save/load functionality
+- Settings system implementation
+- Target: Functional text editor under 20MB
+
+## Phase 2: LSP Integration
+- Implement LSP client in Rust backend
+- Add TypeScript language server support
+- Add JavaScript language server support
+- Add Python language server support
+- Create UI for diagnostics display
+- Implement hover information and go-to-definition
+- Code completion with basic IntelliSense
+- External LSP server process management
+
+## Phase 3: AI Integration - Cloud Providers
+- Design modular AI provider interface
+- Implement Anthropic Claude integration
+- Add OpenAI GPT integration
+- Add inline code completion UI
+- Create AI chat sidebar component
+- Implement streaming responses
+- Add provider switching mechanism
+- Settings UI for API key management
+
+## Phase 4: AI Integration - Local Models
+- Integrate Ollama client library
+- Create model download manager UI
+- Implement CodeLLaMA support
+- Add TinyLLaMA with quantization
+- Create model switching interface
+- Optimize for low memory usage
+- Add progress indicators for inference
+
+## Phase 5: Performance Optimization
+- Implement lazy loading for all components
+- Add resource usage monitoring
+- Create feature toggle system
+- Implement response caching layer
+- Optimize bundle size with tree shaking
+- Add UPX compression to build pipeline
+- Profile and optimize hot paths
+- Achieve target performance metrics
+
+## Phase 6: Polish and Extended Features
+- Add additional themes (minimal set)
+- Implement workspace support
+- Add find/replace functionality
+- Create command palette
+- Add basic keyboard shortcut customization
+- Implement update mechanism
+- Create onboarding experience
+
+## Phase 7: Extension System (Future)
+- Design minimal plugin API
+- Create plugin loader mechanism
+- Build example plugins
+- Document plugin development
+- Create plugin marketplace concept
+
+# Logical Dependency Chain
+
+## Foundation Layer (Must be built first)
+1. Tauri application shell with webview
+2. Basic file system operations
+3. Monaco editor integration
+4. Settings/configuration system
+
+## Editor Enhancement Layer
+1. LSP client implementation (depends on Foundation)
+2. Language server integration (depends on LSP client)
+3. IntelliSense UI components (depends on LSP integration)
+
+## AI Layer
+1. Provider interface design (can parallel with Editor layer)
+2. Cloud provider implementations (depends on provider interface)
+3. Local model support via Ollama (depends on provider interface)
+4. AI UI components (depends on at least one provider)
+
+## Optimization Layer
+1. Performance profiling baseline (depends on core features)
+2. Lazy loading implementation (can be incremental)
+3. Caching systems (depends on usage patterns)
+4. Binary compression (final build step)
+
+## Polish Layer
+1. Additional features (depends on stable core)
+2. User experience improvements (based on testing)
+3. Documentation and onboarding (near completion)
+
+# Risks and Mitigations  
+
+## Technical Risks
+
+### Monaco Editor Extraction Complexity
+- **Risk**: Difficulty in extracting Monaco from VS Code cleanly
+- **Mitigation**: Start with monaco-editor npm package, incrementally add features
+
+### LSP Performance with External Servers
+- **Risk**: Latency and resource usage from external processes
+- **Mitigation**: Implement aggressive caching, option for bundled servers
+
+### AI Provider Reliability
+- **Risk**: API downtime or rate limiting affecting user experience
+- **Mitigation**: Fallback providers, local model options, graceful degradation
+
+### Binary Size Targets
+- **Risk**: Difficulty achieving 10-20MB target with all features
+- **Mitigation**: Modular architecture, optional components, aggressive optimization
+
+### Cross-Platform Compatibility
+- **Risk**: Tauri webview differences across platforms
+- **Mitigation**: Extensive testing, platform-specific optimizations
+
+## Resource Constraints
+
+### Development Complexity
+- **Risk**: Balancing feature set with performance goals
+- **Mitigation**: Clear priorities, incremental development, continuous profiling
+
+### Maintenance Burden
+- **Risk**: Keeping up with VS Code updates and API changes
+- **Mitigation**: Minimize coupling, maintain clear abstraction layers
+
+## Market Risks
+
+### User Adoption
+- **Risk**: Users preferring full-featured VS Code despite resource usage
+- **Mitigation**: Clear value proposition, focus on niche use cases
+
+### AI Provider Changes
+- **Risk**: API changes or service discontinuation
+- **Mitigation**: Provider abstraction layer, multiple provider support
+
+# Appendix  
+
+## Performance Benchmarks
+- VS Code: ~300MB download, ~200-400MB RAM usage, 3-5 second startup
+- Target: ~10-20MB download, ~30-50MB RAM usage, 1-2 second startup
+
+## Technical Specifications
+
+### Supported Platforms
+- Windows 10/11 (x64, ARM64)
+- macOS 10.15+ (Intel, Apple Silicon)
+- Linux (Ubuntu 20.04+, Fedora 35+, Arch)
+
+### Language Support Matrix
+- TypeScript: Full IntelliSense, diagnostics, refactoring
+- JavaScript: Full IntelliSense, diagnostics, refactoring  
+- Python: Basic IntelliSense, diagnostics
+
+### AI Model Compatibility
+- Cloud: Any REST API compatible service
+- Local: GGUF format models via Ollama
+- Quantization: 4-bit, 8-bit support for reduced memory usage
+
+### Build Requirements
+- Rust 1.70+
+- Node.js 18+
+- Platform-specific webview dependencies
+
+### Configuration Files
+- `settings.json`: User preferences and feature toggles
+- `keybindings.json`: Keyboard shortcut customization
+- `.kadeide/config.json`: Workspace-specific settings
+</PRD>
