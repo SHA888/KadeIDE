@@ -16,7 +16,7 @@
           "description": "Set up a new Tauri project using the CLI tool and select appropriate templates",
           "dependencies": [],
           "details": "Install Tauri CLI, run initialization command, select minimal template options, verify project structure, and ensure all dependencies are correctly installed. Configure package.json and Cargo.toml with appropriate metadata.",
-          "status": "pending"
+          "status": "in-progress"
         },
         {
           "id": 2,

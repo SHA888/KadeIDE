@@ -1,0 +1,86 @@
+[package]
+name = "kade-ide"
+version = "0.1.0"
+description = "A lightweight, high-performance code editor built with Tauri"
+authors = ["Kresna Sucandra <kresnasucandra@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/SHA888/KadeIDE"
+edition = "2021"
+rust-version = "1.70"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
+[build-dependencies]
+tauri-build = { version = "2.2.0", features = [] }
+bindgen = { version = "0.68.0", optional = true }
+
+[dependencies]
+# Tauri
+# Core Tauri dependencies
+tauri = { version = "2.5.1", features = [
+    "wry",
+    "tray-icon"
+] }
+
+# Tauri plugins
+tauri-plugin-log = "2.4.0"
+tauri-plugin-http = "2.4.4"
+
+# Logging and Error Handling
+log = "0.4"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+anyhow = { version = "1.0", features = ["backtrace"] }
+thiserror = "2.0"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_repr = "0.1"
+serde_with = "3.0"
+
+# Async Runtime
+tokio = { version = "1.0", features = ["full"] }
+
+# File System and Processes
+notify = "6.1"
+walkdir = "2.3"
+dirs = "5.0"  # For cross-platform directory handling
+
+# Networking
+reqwest = { version = "0.11", features = ["json", "stream"] }
+url = "2.4"
+
+# AI/ML related (for future integration)
+llm = { version = "0.1.0-rc4", optional = true }
+tokenizers = { version = "0.15", optional = true }
+
+# Utils
+lazy_static = "1.4"
+regex = "1.9"
+clap = { version = "4.0", features = ["derive"] }
+config = "0.13"
+path-absolutize = "3.0"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+cocoa = "0.25"
+objc = "0.2.7"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+winapi = { version = "0.3", features = ["winuser", "winerror", "winbase", "winnt"] }
+
+[profile.dev]
+opt-level = 0
+debug = true
+split-debuginfo = 'unpacked'
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = 'abort'

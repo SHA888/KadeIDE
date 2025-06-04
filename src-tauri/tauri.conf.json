@@ -1,0 +1,94 @@
+{
+  "productName": "KadeIDE",
+  "version": "0.1.0",
+  "identifier": "com.sha888.kadeide",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
+    "devUrl": "http://localhost:5173",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "security": {
+      "csp": "default-src 'self'; connect-src 'self' https://api.x.ai ws://localhost:*; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-eval'",
+      "dangerousDisableAssetCspModification": false
+    },
+    "windows": [
+      {
+        "title": "KadeIDE",
+        "width": 1280,
+        "height": 800,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "withGlobalTauri": true
+
+  },
+  "bundle": {
+    "active": true,
+    "category": "DeveloperTool",
+    "copyright": "",
+    "linux": {
+      "deb": {
+        "depends": ["libwebkit2gtk-4.1-0", "libgtk-3-0"]
+      }
+    },
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "longDescription": "A lightweight, high-performance code editor with AI capabilities",
+    "macOS": {
+      "entitlements": "entitlements.plist",
+      "minimumSystemVersion": "10.13"
+    },
+    "resources": ["icons/*"],
+    "shortDescription": "KadeIDE - Lightweight Code Editor",
+    "targets": ["app", "deb", "appimage", "msi", "dmg"],
+    "windows": {
+      "wix": {
+        "enableElevatedUpdateTask": false
+      }
+    }
+  },
+  "plugins": {
+    "shell": {
+      "open": true,
+      "execute": true,
+      "scope": ["ollama", "typescript-language-server"]
+    },
+    "http": {
+      "all": true,
+      "request": true,
+      "scope": [
+        "https://api.x.ai/*",
+        "https://api.openai.com/*",
+        "https://api.anthropic.com/*",
+        "https://api.mixtral.ai/*",
+        "https://generativelanguage.googleapis.com/*"
+      ]
+    },
+    "fs": {
+      "all": false,
+      "readFile": true,
+      "writeFile": true,
+      "readDir": true,
+      "scope": ["$HOME/**/*", "$APP/**/*"]
+    },
+    "window": {
+      "all": false,
+      "create": true,
+      "close": true,
+      "maximize": true,
+      "minimize": true
+    },
+    "tray": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true
+    }
+  }
+}
